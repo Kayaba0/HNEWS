@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anime Release Calendar</title>
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="icon" href="assets/logo.png" />
+</head>
+<body>
+<header class="topbar glass">
+  <div class="brand" onclick="location.href='index.html'">
+    <img src="assets/logo.png" class="logo" alt="logo">
+    <h1>Anime Release Calendar</h1>
+  </div>
+
+  <div class="filters">
+    <input id="search" placeholder="Cerca anime..." />
+    <div class="select glass" id="yearSelect"></div>
+    <div class="select glass" id="monthSelect"></div>
+    <div class="select glass" id="genreSelect"></div>
+    <div class="select glass" id="studioSelect"></div>
+  </div>
+
+  <div class="actions">
+    <button id="langToggle">IT/EN</button>
+    <button id="themeToggle">&#9788;</button>
+    <button id="loginBtn">&#128274;</button>
+  </div>
+</header>
+
+<main id="content"></main>
+
+<div id="galleryModal" class="modal hidden">
+ <div class="modal-content glass">
+  <span id="closeGallery">&times;</span>
+  <img id="galleryImg" />
+ </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

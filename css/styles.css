@@ -1,0 +1,37 @@
+
+:root{
+ --bg1:#0e0522;
+ --bg2:#321658;
+ --card:#141b2b;
+ --accent:#ff7b2c;
+ --accent2:#945cff;
+ --text:#fff;
+}
+[data-theme='light']{
+ --bg1:#fafafa;
+ --bg2:#e0e0ff;
+ --card:#ffffff;
+ --text:#111;
+}
+body{
+ margin:0;font-family:Inter,system-ui;
+ background:linear-gradient(160deg,var(--bg1),var(--bg2));
+ color:var(--text);
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo{height:32px}
+.filters{display:flex;gap:10px;flex-wrap:wrap}
+.select,input{padding:10px 14px;border-radius:14px;border:none;background:rgba(255,255,255,0.08);color:var(--text);min-width:130px}
+.select{cursor:pointer;position:relative}
+.select::after{content:'▼';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;opacity:.7}
+.actions button{margin-left:8px;border-radius:12px;padding:8px 12px;border:none;background:rgba(255,255,255,0.08);color:var(--text)}
+.glass{backdrop-filter:blur(18px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card{border-radius:16px;background:var(--card);margin:14px;overflow:hidden;cursor:pointer;transition:.25s}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;padding:10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+.hidden{display:none}
+.modal-content{position:relative}
+.modal-content span{position:absolute;top:4px;right:10px;cursor:pointer;font-size:26px}
+img{max-width:100%}
