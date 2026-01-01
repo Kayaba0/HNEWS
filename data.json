@@ -7,9 +7,9 @@
     "month": "Luglio",
     "release": "15 Luglio 2024",
     "status": "upcoming",
-    "cover": "images/download.jpg",
+    "cover": "assets/images/download.jpg",
     "images": [
-      "images/download.jpg",
+      "assets/images/download.jpg",
       "images/download.jpg",
       "images/download.jpg"
     ],
