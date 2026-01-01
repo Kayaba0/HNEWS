@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Anime Release Calendar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <h1>Anime Release Calendar</h1>
+
+  <div class="right">
+    <input id="search" placeholder="Cerca titolo...">
+
+    <button id="themeToggle">☾</button>
+  </div>
+</header>
+
+<div class="filters">
+  <select id="yearFilter"></select>
+  <select id="monthFilter"></select>
+  <select id="genreFilter"></select>
+  <select id="studioFilter"></select>
+  <select id="statusFilter">
+    <option value="">Tutti</option>
+    <option value="upcoming">In uscita</option>
+    <option value="aired">Usciti</option>
+  </select>
+</div>
+
+<main>
+  <section class="list">
+    <h2>Uscite</h2>
+    <div id="animeList"></div>
+  </section>
+
+  <section class="details">
+    <img id="heroImage">
+
+    <div id="detailsBox">
+      <h2 id="title"></h2>
+      <p><strong>Studio:</strong> <span id="studio"></span></p>
+      <p><strong>Data di uscita:</strong> <span id="date"></span></p>
+      <p id="plot"></p>
+
+      <h3>Galleria</h3>
+      <div id="gallery"></div>
+    </div>
+  </section>
+</main>
+
+<div id="modal" class="modal">
+  <img id="modalImg">
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
