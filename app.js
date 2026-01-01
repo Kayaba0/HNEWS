@@ -1,5 +1,5 @@
 async function loadData(){
-  const res = await fetch("data.json");
+  const res = await fetch("data.json?v=" + Date.now());
   ANIME = await res.json();
 
   populateFilters();
