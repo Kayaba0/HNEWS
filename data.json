@@ -7,11 +7,10 @@
     "month": "Luglio",
     "release": "15 Luglio 2024",
     "status": "upcoming",
-    "cover": "assets/images/download.jpg",
+    "cover": "assets/images/1.png",
     "images": [
-      "assets/images/download.jpg",
-      "images/download.jpg",
-      "images/download.jpg"
+      "assets/images/2.png",
+      "assets/images/3.png"
     ],
     "plot": "Un misterioso cavaliere cibernetico difende Tokyo..."
   }
