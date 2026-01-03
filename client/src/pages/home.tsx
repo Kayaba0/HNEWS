@@ -3,12 +3,13 @@ import { useStore, Anime } from '@/lib/data';
 import { format, getMonth, getYear, parseISO } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FilterX } from 'lucide-react';
+import { FilterX, CalendarDays } from 'lucide-react';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { AnimeCard } from '@/components/anime-card';
 import { AnimeDetail } from '@/components/anime-detail';
+import { CalendarView } from '@/components/calendar-view';
 
 export default function Home() {
   const { animes, language } = useStore();
@@ -20,6 +21,8 @@ export default function Home() {
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
 
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+// ... existing memo logic ...
 
   const years = useMemo(() => Array.from(new Set(animes.map(a => getYear(parseISO(a.releaseDate)).toString()))).sort(), [animes]);
   const studios = useMemo(() => Array.from(new Set(animes.map(a => a.studio))).sort(), [animes]);
@@ -139,6 +142,15 @@ export default function Home() {
               <FilterX className="size-4 mr-2" />
               {language === 'it' ? 'Resetta' : 'Reset'}
             </Button>
+
+            <Button 
+              variant="ghost" 
+              onClick={() => setIsCalendarOpen(true)}
+              className="rounded-xl px-3 hover:bg-primary/10 text-primary hover:text-primary h-10 ml-auto"
+            >
+              <CalendarDays className="size-4 mr-2" />
+              {language === 'it' ? 'Calendario' : 'Calendar'}
+            </Button>
           </div>
         </div>
 
@@ -196,6 +208,36 @@ export default function Home() {
                 anime={selectedAnime} 
                 onClose={() => setSelectedAnime(null)} 
                 onQuickFilter={handleQuickFilter}
+              />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isCalendarOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsCalendarOpen(false)}
+              className="fixed inset-0 bg-background/70 backdrop-blur-md z-40"
+            />
+            
+            <motion.aside
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-4 lg:inset-[8%] z-50 glass-panel rounded-[3rem] overflow-hidden shadow-2xl flex flex-col border border-white/20"
+            >
+              <CalendarView 
+                onClose={() => setIsCalendarOpen(false)} 
+                onSelectAnime={(anime) => {
+                  setIsCalendarOpen(false);
+                  setTimeout(() => setSelectedAnime(anime), 300);
+                }}
               />
             </motion.aside>
           </>

@@ -47,9 +47,15 @@ export function Layout({ children }: LayoutProps) {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Navigate to home and the home component handles filter reset via storage or state if needed, 
-    // but here we just force a reload or navigate to '/'
-    window.location.href = '/'; 
+    const main = document.querySelector('main');
+    if (main) {
+      main.style.opacity = '0';
+      main.style.transform = 'translateY(10px)';
+      main.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 400);
   };
 
   return (
