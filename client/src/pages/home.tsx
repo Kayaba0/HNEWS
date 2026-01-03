@@ -3,7 +3,7 @@ import { useStore, Anime } from '@/lib/data';
 import { format, getMonth, getYear, parseISO } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FilterX, ChevronRight } from 'lucide-react';
+import { FilterX } from 'lucide-react';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -91,13 +91,15 @@ export default function Home() {
     <div className="flex flex-col lg:flex-row gap-8 relative min-h-screen">
       
       {/* Left side: Main Content */}
-      <div className={`flex-1 transition-all duration-500 ${selectedAnime ? 'lg:mr-[450px]' : ''}`}>
-        {/* Filters Bar */}
-        <div className="sticky top-20 z-40 px-4 py-4 backdrop-blur-xl border-b border-white/5 bg-background/50 mb-8 overflow-x-auto no-scrollbar rounded-2xl">
-          <div className="flex flex-wrap items-center gap-3">
-            
+      <div className={`flex-1 transition-all duration-500`}>
+        {/* Filters Bar with Sticky Blur Mask */}
+        <div className="sticky top-16 z-40 bg-background/0 -mx-4 px-4 pt-4 pb-2">
+          {/* The "Mask" effect for scrolling elements */}
+          <div className="absolute inset-x-0 -top-20 h-40 bg-gradient-to-b from-background via-background/95 to-transparent pointer-events-none" />
+          
+          <div className="relative flex flex-wrap items-center gap-3 backdrop-blur-xl border border-white/10 bg-background/60 p-4 rounded-3xl shadow-lg">
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="w-[140px] rounded-xl bg-background/50 border-white/10 h-10 glass-card">
+              <SelectTrigger className="w-[140px] rounded-xl bg-background/50 border-white/5 h-10 glass-card">
                 <SelectValue placeholder={language === 'it' ? 'Mese' : 'Month'} />
               </SelectTrigger>
               <SelectContent className="glass-panel">
@@ -107,7 +109,7 @@ export default function Home() {
             </Select>
 
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[120px] rounded-xl bg-background/50 border-white/10 h-10 glass-card">
+              <SelectTrigger className="w-[110px] rounded-xl bg-background/50 border-white/5 h-10 glass-card">
                 <SelectValue placeholder={language === 'it' ? 'Anno' : 'Year'} />
               </SelectTrigger>
               <SelectContent className="glass-panel">
@@ -117,7 +119,7 @@ export default function Home() {
             </Select>
 
             <Select value={selectedStudio} onValueChange={setSelectedStudio}>
-              <SelectTrigger className="w-[160px] rounded-xl bg-background/50 border-white/10 h-10 glass-card">
+              <SelectTrigger className="w-[150px] rounded-xl bg-background/50 border-white/5 h-10 glass-card">
                 <SelectValue placeholder="Studio" />
               </SelectTrigger>
               <SelectContent className="glass-panel">
@@ -127,7 +129,7 @@ export default function Home() {
             </Select>
 
              <Select value={selectedGenre} onValueChange={setSelectedGenre}>
-              <SelectTrigger className="w-[140px] rounded-xl bg-background/50 border-white/10 h-10 glass-card">
+              <SelectTrigger className="w-[130px] rounded-xl bg-background/50 border-white/5 h-10 glass-card">
                 <SelectValue placeholder="Genre" />
               </SelectTrigger>
               <SelectContent className="glass-panel">
@@ -139,17 +141,16 @@ export default function Home() {
             <Button 
               variant="ghost" 
               onClick={resetFilters}
-              className="rounded-xl px-3 hover:bg-white/5 text-muted-foreground hover:text-foreground"
+              className="rounded-xl px-3 hover:bg-white/5 text-muted-foreground hover:text-foreground h-10"
             >
               <FilterX className="size-4 mr-2" />
               {language === 'it' ? 'Resetta' : 'Reset'}
             </Button>
-
           </div>
         </div>
 
         {/* Content Grid */}
-        <div className="space-y-12 pb-20">
+        <div className="space-y-12 pb-20 mt-4">
           {groupedAnimes.length === 0 ? (
             <div className="text-center py-20 text-muted-foreground">
               {language === 'it' ? 'Nessun risultato trovato.' : 'No results found.'}
@@ -166,7 +167,7 @@ export default function Home() {
                   </span>
                 </div>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                   {group.animes.map((anime) => (
                     <AnimeCard 
                       key={anime.id} 
@@ -181,22 +182,33 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Side Panel: Detail View */}
+      {/* Side Panel: Detail View - Wider and more centered */}
       <AnimatePresence>
         {selectedAnime && (
-          <motion.aside
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-20 right-4 bottom-4 w-full lg:w-[420px] z-50 glass-panel rounded-3xl overflow-hidden shadow-2xl flex flex-col"
-          >
-            <AnimeDetail 
-              anime={selectedAnime} 
-              onClose={() => setSelectedAnime(null)} 
-              onQuickFilter={handleQuickFilter}
+          <>
+            {/* Backdrop for focus */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedAnime(null)}
+              className="fixed inset-0 bg-background/40 backdrop-blur-sm z-40 lg:block hidden"
             />
-          </motion.aside>
+            
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 200 }}
+              className="fixed top-20 right-4 lg:right-[10%] bottom-4 w-[95%] lg:w-[600px] z-50 glass-panel rounded-[2rem] overflow-hidden shadow-2xl flex flex-col border border-white/10"
+            >
+              <AnimeDetail 
+                anime={selectedAnime} 
+                onClose={() => setSelectedAnime(null)} 
+                onQuickFilter={handleQuickFilter}
+              />
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
 

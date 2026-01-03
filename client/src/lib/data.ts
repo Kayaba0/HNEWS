@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { format } from 'date-fns';
 
-import heroBg from '@assets/generated_images/abstract_anime_style_background_dark_gradients_orange_purple.png';
 import coverAction from '@assets/generated_images/anime_cover_art_action_shonen_style.png';
 import coverScifi from '@assets/generated_images/anime_cover_art_sci-fi_cyberpunk_style.png';
 import coverSlice from '@assets/generated_images/anime_cover_art_slice_of_life_school_style.png';
@@ -31,63 +29,74 @@ interface AppState {
   deleteAnime: (id: string) => void;
 }
 
-const INITIAL_ANIMES: Anime[] = [
-  {
-    id: '1',
-    title: 'Cyber Chronicles: Neon Dawn',
-    releaseDate: '2026-03-15',
-    studio: 'Future Works',
-    genre: ['Sci-Fi', 'Cyberpunk', 'Action'],
-    description: 'In a world where humanity has merged with machines, one detective seeks the truth behind the phantom code.',
-    coverImage: coverScifi,
-    gallery: [heroBg, coverScifi],
-  },
-  {
-    id: '2',
-    title: 'Sakura High: Eternal Spring',
-    releaseDate: '2026-04-02',
-    studio: 'Kyoto Hearts',
-    genre: ['Slice of Life', 'Romance', 'School'],
-    description: 'A heartwarming story of friendship and first love beneath the falling cherry blossoms.',
-    coverImage: coverSlice,
-    gallery: [heroBg, coverSlice],
-  },
-  {
-    id: '3',
-    title: 'Blade of the Void',
-    releaseDate: '2026-03-20',
-    studio: 'Mappa Arts',
-    genre: ['Action', 'Fantasy', 'Shonen'],
-    description: 'The void is expanding. Only the wielder of the Starlight Blade can seal the rift before it consumes the world.',
-    coverImage: coverAction,
-    gallery: [heroBg, coverAction],
-  },
-  {
-    id: '4',
-    title: 'Project: Override',
-    releaseDate: '2026-05-10',
-    studio: 'Future Works',
-    genre: ['Sci-Fi', 'Mecha'],
-    description: 'Giant robots clash in an interstellar war that will decide the fate of the galaxy.',
-    coverImage: coverScifi,
-    gallery: [heroBg, coverScifi],
-  },
-   {
-    id: '5',
-    title: 'Spirit Hunter',
-    releaseDate: '2026-04-18',
-    studio: 'Spectral Animation',
-    genre: ['Supernatural', 'Mystery'],
-    description: 'Hunting spirits is a dangerous job, but someone has to keep the balance between worlds.',
-    coverImage: coverAction,
-    gallery: [heroBg, coverAction],
-  },
-];
+const genresList = ['Action', 'Sci-Fi', 'Fantasy', 'Shonen', 'Seinen', 'Slice of Life', 'Romance', 'Mystery', 'Supernatural', 'Mecha', 'Adventure'];
+const studiosList = ['Future Works', 'Kyoto Hearts', 'Mappa Arts', 'Ufotable', 'Bones', 'Madhouse', 'Wit Studio', 'A-1 Pictures', 'CloverWorks', 'Production I.G'];
+
+const generateMockAnimes = (): Anime[] => {
+  const animes: Anime[] = [
+    {
+      id: '1',
+      title: 'Cyber Chronicles: Neon Dawn',
+      releaseDate: '2026-03-15',
+      studio: 'Future Works',
+      genre: ['Sci-Fi', 'Cyberpunk', 'Action'],
+      description: 'In a world where humanity has merged with machines, one detective seeks the truth behind the phantom code.',
+      coverImage: coverScifi,
+      gallery: [coverScifi, coverAction],
+    },
+    {
+      id: '2',
+      title: 'Sakura High: Eternal Spring',
+      releaseDate: '2026-04-02',
+      studio: 'Kyoto Hearts',
+      genre: ['Slice of Life', 'Romance', 'School'],
+      description: 'A heartwarming story of friendship and first love beneath the falling cherry blossoms.',
+      coverImage: coverSlice,
+      gallery: [coverSlice, coverScifi],
+    },
+    {
+      id: '3',
+      title: 'Blade of the Void',
+      releaseDate: '2026-03-20',
+      studio: 'Mappa Arts',
+      genre: ['Action', 'Fantasy', 'Shonen'],
+      description: 'The void is expanding. Only the wielder of the Starlight Blade can seal the rift before it consumes the world.',
+      coverImage: coverAction,
+      gallery: [coverAction, coverSlice],
+    },
+  ];
+
+  // Add more examples
+  for (let i = 4; i <= 15; i++) {
+    const randomMonth = Math.floor(Math.random() * 6) + 1; // Jan to June
+    const randomDay = Math.floor(Math.random() * 28) + 1;
+    const randomStudio = studiosList[Math.floor(Math.random() * studiosList.length)];
+    const randomGenres = [
+      genresList[Math.floor(Math.random() * genresList.length)],
+      genresList[Math.floor(Math.random() * genresList.length)]
+    ].filter((v, i, a) => a.indexOf(v) === i);
+    
+    const randomCover = [coverAction, coverScifi, coverSlice][Math.floor(Math.random() * 3)];
+
+    animes.push({
+      id: i.toString(),
+      title: `Anime Legend ${i}: The Quest`,
+      releaseDate: `2026-0${randomMonth}-${randomDay.toString().padStart(2, '0')}`,
+      studio: randomStudio,
+      genre: randomGenres,
+      description: 'An epic journey across unknown lands where heroes are forged and legends are born in the heat of battle.',
+      coverImage: randomCover,
+      gallery: [randomCover, coverAction, coverScifi],
+    });
+  }
+
+  return animes;
+};
 
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
-      animes: INITIAL_ANIMES,
+      animes: generateMockAnimes(),
       isAdmin: false,
       language: 'it',
       theme: 'dark',
@@ -103,7 +112,7 @@ export const useStore = create<AppState>()(
         set((state) => ({ animes: state.animes.filter((a) => a.id !== id) })),
     }),
     {
-      name: 'anime-release-store',
+      name: 'anime-release-store-v2',
     }
   )
 );

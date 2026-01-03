@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
-import { Calendar, Tag } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { Anime, useStore } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 
@@ -28,7 +28,7 @@ export function AnimeCard({ anime, onClick }: AnimeCardProps) {
         />
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
         
         {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -36,17 +36,16 @@ export function AnimeCard({ anime, onClick }: AnimeCardProps) {
             {anime.studio}
           </Badge>
           
-          <h3 className="font-display text-xl font-bold leading-tight text-white mb-1 line-clamp-2">
+          <h3 className="font-display text-lg font-bold leading-tight text-white mb-2 line-clamp-1">
             {anime.title}
           </h3>
           
-          <div className="flex items-center gap-2 text-sm text-gray-300">
-            <Calendar className="size-3.5" />
-            <span>
-              {format(new Date(anime.releaseDate), 'd MMMM yyyy', { 
-                locale: language === 'it' ? it : enUS 
-              })}
-            </span>
+          <div className="flex flex-wrap gap-1">
+            {anime.genre.slice(0, 2).map(g => (
+              <span key={g} className="text-[10px] uppercase tracking-wider text-muted-foreground bg-white/5 px-1.5 py-0.5 rounded">
+                {g}
+              </span>
+            ))}
           </div>
         </div>
 
