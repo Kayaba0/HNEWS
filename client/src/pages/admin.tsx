@@ -98,6 +98,30 @@ export default function Admin() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -161,7 +185,14 @@ export default function Admin() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 
                 {/* Image Upload Area */}
-                <div className="relative aspect-[3/4] w-full rounded-xl border-2 border-dashed border-white/20 hover:border-primary/50 transition-colors flex flex-col items-center justify-center bg-black/20 overflow-hidden group">
+                <div 
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`relative aspect-[3/4] w-full rounded-xl border-2 border-dashed transition-all flex flex-col items-center justify-center bg-black/20 overflow-hidden group ${
+                    isDragging ? 'border-primary bg-primary/10' : 'border-white/20 hover:border-primary/50'
+                  }`}
+                >
                   {coverPreview ? (
                     <>
                       <img src={coverPreview} className="w-full h-full object-cover" />
@@ -171,7 +202,7 @@ export default function Admin() {
                     </>
                   ) : (
                     <div className="text-center p-4">
-                      <Upload className="mx-auto size-8 text-muted-foreground mb-2" />
+                      <Upload className={`mx-auto size-8 mb-2 transition-colors ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
                       <p className="text-xs text-muted-foreground">Drag & drop or click to upload cover</p>
                       <Input 
                         type="file" 
