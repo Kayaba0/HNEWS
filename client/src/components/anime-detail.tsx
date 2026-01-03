@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Anime, useStore } from '@/lib/data';
 import { format, parseISO, getYear } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
@@ -19,13 +19,23 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
   const { language } = useStore();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (anime) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [anime]);
+
   if (!anime) return null;
 
   const galleryImages = [
     anime.coverImage, 
-    ...anime.gallery, 
-    ...anime.gallery, // Duplicating for testing scroll if needed
-    ...anime.gallery 
+    ...anime.gallery,
+    ...anime.gallery
   ];
 
   const nextImage = () => {
@@ -40,50 +50,51 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
 
   return (
     <div className="flex flex-col md:flex-row h-full">
-      {/* Left Column: Image & Basic Info (Vertical on mobile, Left on Desktop) */}
-      <div className="relative w-full md:w-[40%] h-64 md:h-full shrink-0 overflow-hidden">
+      {/* Left Column: Big Image */}
+      <div className="relative w-full md:w-[45%] h-64 md:h-full shrink-0 overflow-hidden bg-black">
         <img 
           src={anime.coverImage} 
           alt={anime.title} 
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent to-background/95 md:to-background/90" />
-        
-        <div className="absolute bottom-6 left-6 right-6">
-          <Badge 
-            variant="outline" 
-            className="mb-3 border-secondary/50 text-secondary bg-secondary/10 px-3 py-1 text-sm rounded-lg cursor-pointer hover:bg-secondary/20"
-            onClick={() => onQuickFilter('year', getYear(parseISO(anime.releaseDate)).toString())}
-          >
-            {format(parseISO(anime.releaseDate), 'MMMM yyyy', { locale: language === 'it' ? it : enUS })}
-          </Badge>
-          <h2 className="text-3xl lg:text-5xl font-display font-bold text-white leading-tight">
-            {anime.title}
-          </h2>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent via-transparent to-background/90" />
       </div>
 
       {/* Right Column: Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background/40">
-        <div className="flex justify-end p-4">
+      <div className="flex-1 flex flex-col min-w-0 bg-background/60 backdrop-blur-md">
+        <div className="flex justify-end p-6 pb-0">
           <Button 
             size="icon" 
             variant="ghost" 
-            className="rounded-full bg-white/5 backdrop-blur-md hover:bg-white/10 text-white"
+            className="rounded-full bg-white/5 hover:bg-white/10 text-white h-12 w-12"
             onClick={onClose}
           >
-            <X className="size-6" />
+            <X className="size-8" />
           </Button>
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-6 lg:p-10 space-y-8">
+          <div className="p-8 lg:p-12 pt-4 space-y-10">
+            {/* Title & Date Section At Top Right */}
+            <div className="space-y-4">
+              <Badge 
+                variant="outline" 
+                className="border-secondary/50 text-secondary bg-secondary/10 px-4 py-1.5 text-base rounded-xl cursor-pointer hover:bg-secondary/20 transition-all"
+                onClick={() => onQuickFilter('year', getYear(parseISO(anime.releaseDate)).toString())}
+              >
+                {format(parseISO(anime.releaseDate), 'MMMM yyyy', { locale: language === 'it' ? it : enUS })}
+              </Badge>
+              <h2 className="text-4xl lg:text-6xl font-display font-bold text-white leading-none">
+                {anime.title}
+              </h2>
+            </div>
+
             <div className="flex flex-wrap gap-2">
               {anime.genre.map(g => (
                 <Badge 
                   key={g} 
                   variant="secondary" 
-                  className="rounded-xl px-4 py-1.5 bg-white/5 hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer border-transparent text-sm"
+                  className="rounded-full px-5 py-2 bg-white/5 hover:bg-primary/20 hover:text-primary transition-all cursor-pointer border-transparent text-sm font-medium"
                   onClick={() => onQuickFilter('genre', g)}
                 >
                   {g}
@@ -91,62 +102,64 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
               ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-4 p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div 
-                className="flex flex-col gap-1 cursor-pointer group"
+                className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer group hover:bg-white/10 transition-all"
                 onClick={() => onQuickFilter('studio', anime.studio)}
               >
-                <span className="text-xs text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                  <Building2 className="size-3.5" />
-                  Studio
-                </span>
-                <span className="font-semibold text-lg group-hover:text-primary transition-colors">{anime.studio}</span>
+                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                  <Building2 className="size-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Studio</span>
+                  <span className="font-bold text-base leading-tight">{anime.studio}</span>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                  <Calendar className="size-3.5" />
-                  {language === 'it' ? 'Data' : 'Date'}
-                </span>
-                <span className="font-semibold text-lg">
-                  {format(parseISO(anime.releaseDate), 'dd MMM yyyy')}
-                </span>
+
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5">
+                <div className="p-2 rounded-lg bg-secondary/10 text-secondary">
+                  <Calendar className="size-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest">{language === 'it' ? 'Data' : 'Date'}</span>
+                  <span className="font-bold text-base leading-tight">
+                    {format(parseISO(anime.releaseDate), 'dd MMM yyyy')}
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-bold flex items-center gap-2 text-primary">
+              <h3 className="text-xl font-bold flex items-center gap-2 text-primary/80">
                  <Layers className="size-5" />
                  {language === 'it' ? 'Sinossi' : 'Synopsis'}
               </h3>
-              <p className="text-muted-foreground leading-relaxed text-lg">
+              <p className="text-muted-foreground leading-relaxed text-lg font-light">
                 {anime.description}
               </p>
             </div>
 
-            {/* Gallery Section with Horizontal Scroll */}
-            <div className="space-y-4 pt-4">
+            {/* Gallery Section - Vertical Scrollable Grid */}
+            <div className="space-y-6 pt-4">
               <h3 className="text-xl font-bold">Gallery</h3>
-              <ScrollArea className="w-full whitespace-nowrap rounded-3xl">
-                <div className="flex gap-4 pb-4">
-                  {galleryImages.map((img, idx) => (
-                    <motion.div 
-                      key={idx} 
-                      whileHover={{ scale: 1.05 }}
-                      className="relative w-64 aspect-video rounded-2xl overflow-hidden cursor-pointer group bg-black/50 border border-white/10 shrink-0"
-                      onClick={() => setLightboxIndex(idx)}
-                    >
-                      <img 
-                        src={img} 
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <Maximize2 className="size-6 text-white" />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+              <div className="grid grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                {galleryImages.map((img, idx) => (
+                  <motion.div 
+                    key={idx} 
+                    whileHover={{ scale: 1.03 }}
+                    className="relative aspect-video rounded-2xl overflow-hidden cursor-pointer group bg-black/50 border border-white/5"
+                    onClick={() => setLightboxIndex(idx)}
+                  >
+                    <img 
+                      src={img} 
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <Maximize2 className="size-6 text-white" />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </ScrollArea>

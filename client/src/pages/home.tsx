@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useStore, Anime } from '@/lib/data';
 import { format, getMonth, getYear, parseISO } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
@@ -65,6 +65,7 @@ export default function Home() {
     if (type === 'studio') setSelectedStudio(value);
     if (type === 'genre') setSelectedGenre(value);
     if (type === 'year') setSelectedYear(value);
+    setSelectedAnime(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -181,15 +182,15 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedAnime(null)}
-              className="fixed inset-0 bg-background/60 backdrop-blur-md z-40"
+              className="fixed inset-0 bg-background/70 backdrop-blur-md z-40"
             />
             
             <motion.aside
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-x-4 inset-y-20 lg:inset-x-[10%] lg:inset-y-[15%] z-50 glass-panel rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col border border-white/10"
+              className="fixed inset-4 lg:inset-[8%] z-50 glass-panel rounded-[3rem] overflow-hidden shadow-2xl flex flex-col border border-white/20"
             >
               <AnimeDetail 
                 anime={selectedAnime} 
