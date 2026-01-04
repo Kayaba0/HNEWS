@@ -183,7 +183,7 @@ export default function Home() {
                   <h2 className="text-3xl font-display font-bold text-gradient">
                     {format(group.date, 'MMMM', { locale: language === 'it' ? it : enUS })}
                   </h2>
-                  <span className="text-xl text-muted-foreground font-light">
+                  <span className="text-xl text-muted-foreground font-semibold">
                     {format(group.date, 'yyyy')}
                   </span>
                 </div>
@@ -206,7 +206,6 @@ export default function Home() {
           )}
         </div>
       </div>
-
       {/* Editor Modal */}
       <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
         <DialogContent className="sm:max-w-[700px] glass-panel border-white/20 p-6 rounded-[2rem]">
@@ -226,7 +225,6 @@ export default function Home() {
           />
         </DialogContent>
       </Dialog>
-
       <AnimatePresence>
         {selectedAnime && (
           <>
@@ -254,7 +252,6 @@ export default function Home() {
           </>
         )}
       </AnimatePresence>
-
       <AnimatePresence>
         {isCalendarOpen && (
           <>
