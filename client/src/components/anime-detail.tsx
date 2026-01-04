@@ -48,9 +48,9 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-full">
+    <div className="flex flex-col md:flex-row h-full overflow-hidden md:overflow-visible">
       {/* Left Column: Big Image */}
-      <div className="relative w-full md:w-[45%] h-64 md:h-full shrink-0 overflow-hidden bg-black">
+      <div className="relative w-full md:w-[45%] h-64 md:h-screen shrink-0 overflow-hidden bg-black">
         <img 
           src={anime.coverImage} 
           alt={anime.title} 
@@ -60,8 +60,8 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
       </div>
 
       {/* Right Column: Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background/60 backdrop-blur-md">
-        <div className="flex justify-end p-6 pb-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-background/60 backdrop-blur-md h-full overflow-hidden">
+        <div className="flex justify-end p-6 pb-0 absolute top-0 right-0 z-10">
           <Button 
             size="icon" 
             variant="ghost" 
@@ -72,7 +72,7 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
           </Button>
         </div>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 h-full">
           <div className="p-8 lg:p-12 pt-4 space-y-10">
             {/* Title & Date Section At Top Right */}
             <div className="space-y-4">
@@ -169,18 +169,33 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
         <DialogContent className="max-w-[95vw] max-h-[90vh] p-0 border-none bg-black/95 backdrop-blur-2xl flex items-center justify-center overflow-hidden">
           {lightboxIndex !== null && (
             <div className="relative w-full h-full flex items-center justify-center p-4">
-              <motion.img 
-                key={lightboxIndex}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                src={galleryImages[lightboxIndex]} 
-                className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
-              />
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={lightboxIndex}
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(_, info) => {
+                    const swipeThreshold = 50;
+                    if (info.offset.x < -swipeThreshold) {
+                      nextImage();
+                    } else if (info.offset.x > swipeThreshold) {
+                      prevImage();
+                    }
+                  }}
+                  src={galleryImages[lightboxIndex]} 
+                  className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl cursor-grab active:cursor-grabbing touch-none"
+                />
+              </AnimatePresence>
               
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="absolute left-6 rounded-full bg-white/10 text-white hover:bg-white/20 p-2 h-12 w-12"
+                className="absolute left-6 rounded-full bg-white/10 text-white hover:bg-white/20 p-2 h-12 w-12 hidden md:flex"
                 onClick={(e) => { e.stopPropagation(); prevImage(); }}
               >
                 <ChevronLeft className="size-10" />
@@ -189,7 +204,7 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="absolute right-6 rounded-full bg-white/10 text-white hover:bg-white/20 p-2 h-12 w-12"
+                className="absolute right-6 rounded-full bg-white/10 text-white hover:bg-white/20 p-2 h-12 w-12 hidden md:flex"
                 onClick={(e) => { e.stopPropagation(); nextImage(); }}
               >
                 <ChevronRight className="size-10" />
