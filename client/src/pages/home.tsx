@@ -3,16 +3,18 @@ import { useStore, Anime } from '@/lib/data';
 import { format, getMonth, getYear, parseISO } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FilterX, CalendarDays } from 'lucide-react';
+import { FilterX, CalendarDays, Plus, Settings } from 'lucide-react';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { AnimeCard } from '@/components/anime-card';
 import { AnimeDetail } from '@/components/anime-detail';
 import { CalendarView } from '@/components/calendar-view';
+import { AnimeEditor } from '@/components/anime-editor';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function Home() {
-  const { animes, language } = useStore();
+  const { animes, language, isAdmin } = useStore();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
@@ -22,6 +24,8 @@ export default function Home() {
 
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [editingAnime, setEditingAnime] = useState<Anime | null>(null);
 // ... existing memo logic ...
 
   const years = useMemo(() => Array.from(new Set(animes.map(a => getYear(parseISO(a.releaseDate)).toString()))).sort(), [animes]);
@@ -151,6 +155,19 @@ export default function Home() {
               <CalendarDays className="size-4 mr-2" />
               {language === 'it' ? 'Calendario' : 'Calendar'}
             </Button>
+
+            {isAdmin && (
+              <Button 
+                onClick={() => {
+                  setEditingAnime(null);
+                  setIsEditorOpen(true);
+                }}
+                className="rounded-xl px-4 bg-gradient-to-r from-primary to-secondary text-white border-none h-10 shadow-lg shadow-primary/20"
+              >
+                <Plus className="size-4 mr-2" />
+                {language === 'it' ? 'Aggiungi' : 'Add'}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -176,7 +193,11 @@ export default function Home() {
                     <AnimeCard 
                       key={anime.id} 
                       anime={anime} 
-                      onClick={() => setSelectedAnime(anime)} 
+                      onClick={() => setSelectedAnime(anime)}
+                      onEdit={isAdmin ? () => {
+                        setEditingAnime(anime);
+                        setIsEditorOpen(true);
+                      } : undefined}
                     />
                   ))}
                 </div>
@@ -185,6 +206,26 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Editor Modal */}
+      <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
+        <DialogContent className="sm:max-w-[700px] glass-panel border-white/20 p-6 rounded-[2rem]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-display font-bold">
+              {editingAnime 
+                ? (language === 'it' ? 'Modifica Anime' : 'Edit Anime') 
+                : (language === 'it' ? 'Nuovo Anime' : 'New Anime')}
+            </DialogTitle>
+          </DialogHeader>
+          <AnimeEditor 
+            anime={editingAnime} 
+            onClose={() => {
+              setIsEditorOpen(false);
+              setEditingAnime(null);
+            }} 
+          />
+        </DialogContent>
+      </Dialog>
 
       <AnimatePresence>
         {selectedAnime && (

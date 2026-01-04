@@ -34,7 +34,6 @@ export function AnimeDetail({ anime, onClose, onQuickFilter }: AnimeDetailProps)
 
   const galleryImages = [
     anime.coverImage, 
-    ...anime.gallery,
     ...anime.gallery
   ];
 

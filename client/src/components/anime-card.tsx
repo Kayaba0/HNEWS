@@ -1,16 +1,18 @@
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
-import { Calendar } from 'lucide-react';
+import { Calendar, Edit3 } from 'lucide-react';
 import { Anime, useStore } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface AnimeCardProps {
   anime: Anime;
   onClick: () => void;
+  onEdit?: () => void;
 }
 
-export function AnimeCard({ anime, onClick }: AnimeCardProps) {
+export function AnimeCard({ anime, onClick, onEdit }: AnimeCardProps) {
   const { language } = useStore();
   
   return (
@@ -18,9 +20,8 @@ export function AnimeCard({ anime, onClick }: AnimeCardProps) {
       whileHover={{ y: -5, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className="group relative cursor-pointer"
-      onClick={onClick}
     >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-card border border-white/5 shadow-lg">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-card border border-white/5 shadow-lg" onClick={onClick}>
         <img 
           src={anime.coverImage} 
           alt={anime.title} 
@@ -59,6 +60,20 @@ export function AnimeCard({ anime, onClick }: AnimeCardProps) {
           </span>
         </div>
       </div>
+
+      {onEdit && (
+        <Button
+          size="icon"
+          variant="secondary"
+          className="absolute top-3 left-3 size-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+        >
+          <Edit3 className="size-5 text-white" />
+        </Button>
+      )}
     </motion.div>
   );
 }
