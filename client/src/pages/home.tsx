@@ -181,7 +181,7 @@ export default function Home() {
               <section key={group.key}>
                 <div className="flex items-baseline gap-4 mb-6 border-b border-white/5 pb-4">
                   <h2 className="text-3xl font-display font-bold text-gradient">
-                    {format(group.date, 'MMMM', { locale: language === 'it' ? it : enUS })}
+                    {format(group.date, 'MMMM', { locale: language === 'it' ? it : enUS }).charAt(0).toUpperCase() + format(group.date, 'MMMM', { locale: language === 'it' ? it : enUS }).slice(1)}
                   </h2>
                   <span className="text-xl text-muted-foreground font-semibold">
                     {format(group.date, 'yyyy')}
